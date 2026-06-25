@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pré-visualizar CT-e (PDF)</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            margin: auto;
+        }
+        h1 {
+            color: #333;
+        }
+        input, button, select {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #response {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            display: none;
+            text-align: left;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Pré-visualizar CT-e</h1>
+        <form id="previewForm">
+            <input type="text" id="grupo" placeholder="Grupo" required>
+            <input type="text" id="username" placeholder="Usuário" required>
+            <input type="password" id="password" placeholder="Senha" required>
+            <input type="text" id="cnpj" placeholder="CNPJ" required>
+            <select id="urlFormat">
+                <option value="1">URL para download do PDF</option>
+                <option value="0">Conteúdo binário do PDF</option>
+            </select>
+            <input type="file" id="arquivo" accept=".xml,.tx2" required>
+            <button type="submit">Gerar PDF</button>
+        </form>
+        <pre id="response"></pre>
+        <button class="back-button" onclick="window.history.back()">Voltar</button>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            $('#previewForm').on('submit', function(e) {
+                e.preventDefault();
+
+                const grupo = $('#grupo').val();
+                const cnpj = $('#cnpj').val();
+                const username = $('#username').val();
+                const password = $('#password').val();
+                const url = $('#urlFormat').val();
+                const file = $('#arquivo')[0].files[0];
+
+                if (!file) {
+                    alert('Selecione um arquivo XML ou TX2.');
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const arquivo = event.target.result;
+
+                    const token = btoa(username + ":" + password);
+
+                    $.ajax({
+                        url: 'https://managersaas.tecnospeed.com.br:8081/ManagerAPIWeb/cte/prever',
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'Authorization': 'Basic ' + token
+                        },
+                        data: {
+                            Grupo: grupo,
+                            CNPJ: cnpj,
+                            Arquivo: arquivo,
+                            URL: url
+                        },
+                        success: function(response) {
+                            let conteudo = typeof response === 'string' ? response : JSON.stringify(response, null, 2);
+                            $('#response').css({
+                                'background-color': '#d4edda',
+                                'color': '#155724',
+                                'border': '1px solid #c3e6cb'
+                            }).text(conteudo).show();
+                        },
+                        error: function(xhr, status, error) {
+                            const mensagemErro = xhr.responseText || error;
+                            $('#response').css({
+                                'background-color': '#f8d7da',
+                                'color': '#721c24',
+                                'border': '1px solid #f5c6cb'
+                            }).text('Erro: ' + mensagemErro).show();
+                        }
+                    });
+                };
+                reader.readAsText(file);
+            });
+        });
+    </script>
+</body>
+</html>

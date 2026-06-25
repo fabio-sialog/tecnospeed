@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Configurar Modelo DACTE / DAMDFE</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    :root {
+      --azul: #007bff;
+      --azul-hover: #0056b3;
+      --cinza: #6c757d;
+      --cinza-hover: #5a6268;
+      --borda: #ccc;
+      --fundo: #eef2f7;
+      --texto: #333;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--fundo);
+      padding: 20px;
+      margin: 0;
+    }
+
+    .container {
+      background: #fff;
+      padding: 25px;
+      border-radius: 10px;
+      max-width: 500px;
+      width: 100%;
+      margin: 20px auto;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      box-sizing: border-box;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      font-size: 1.6rem;
+      color: var(--texto);
+      text-align: center;
+    }
+
+    input,
+    select,
+    button {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      font-size: 1rem;
+      border-radius: 6px;
+      border: 1px solid var(--borda);
+      box-sizing: border-box;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: var(--azul);
+      outline: none;
+    }
+
+    button {
+      background-color: var(--azul);
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: var(--azul-hover);
+    }
+
+    .back-button {
+      background-color: var(--cinza);
+    }
+
+    .back-button:hover {
+      background-color: var(--cinza-hover);
+    }
+
+    #response {
+      margin-top: 15px;
+      white-space: pre-wrap;
+      background-color: #f1f1f1;
+      padding: 12px;
+      border-radius: 6px;
+      display: none;
+      font-size: 0.95rem;
+      color: #222;
+      text-align: left;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 20px;
+        margin: 10px;
+      }
+
+      h2 {
+        font-size: 1.4rem;
+      }
+
+      input,
+      select,
+      button {
+        font-size: 1rem;
+        padding: 10px;
+      }
+
+      #response {
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Configurar Modelo DACTE / DAMDFE</h2>
+    <form id="modeloForm">
+      <input type="text" id="cnpj" placeholder="Digite o CNPJ (apenas números)" required />
+      <input type="text" id="username" placeholder="Usuário" required />
+      <input type="password" id="password" placeholder="Senha" required />
+      <select id="secao" required>
+        <option value="DACTE">DACTE (CT-e)</option>
+        <option value="DAMDFE">DAMDFE (MDF-e)</option>
+      </select>
+      <input type="file" id="arquivo" accept=".rtm" required />
+      <button type="submit">Enviar Configuração</button>
+    </form>
+
+    <pre id="response"></pre>
+
+    <button class="back-button" onclick="window.history.back()">Voltar</button>
+  </div>
+
+  <script>
+    $(document).ready(function () {
+      $('#modeloForm').on('submit', function (e) {
+        e.preventDefault();
+
+        const cnpj = $('#cnpj').val();
+        const username = $('#username').val();
+        const password = $('#password').val();
+        const secao = $('#secao').val();
+        const file = $('#arquivo')[0].files[0];
+
+        if (!file) {
+          alert('Selecione um arquivo .rtm');
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function (event) {
+          const modeloRetrato = event.target.result;
+          const token = btoa(username + ':' + password);
+
+          const endpoint =
+            secao === 'DAMDFE'
+              ? 'https://managersaas.tecnospeed.com.br:8081/ManagerAPIWeb/mdfe/modo'
+              : 'https://managersaas.tecnospeed.com.br:8081/ManagerAPIWeb/cte/modo';
+
+          $.ajax({
+            url: endpoint,
+            method: 'POST',
+            headers: {
+              Authorization: 'Basic ' + token,
+              'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            data: {
+              Grupo: 'sialog',
+              CNPJ: cnpj,
+              Secao: secao,
+              ModeloRetrato: modeloRetrato,
+              GetConfig: 1,
+            },
+            success: function (response) {
+              $('#response')
+                .css({ color: 'green', display: 'block' })
+                .text(JSON.stringify(response, null, 2));
+            },
+            error: function (xhr, status, error) {
+              const msg = xhr.responseText || error;
+              $('#response')
+                .css({ color: 'red', display: 'block' })
+                .text('Erro: ' + msg);
+            },
+          });
+        };
+
+        reader.readAsText(file);
+      });
+    });
+  </script>
+</body>
+</html>
