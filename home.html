@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Central de APIs Tecnospeed</title>
+
+<style>
+:root{
+    --azul:#007bff;
+    --azul-hover:#0056b3;
+    --fundo:#eef2f7;
+    --texto:#2d3748;
+    --card:#ffffff;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:'Segoe UI',sans-serif;
+    background:var(--fundo);
+    min-height:100vh;
+}
+
+.header{
+    background:linear-gradient(135deg,#007bff,#0056b3);
+    color:#fff;
+    text-align:center;
+    padding:40px 20px;
+}
+
+.header h1{
+    font-size:2rem;
+    margin-bottom:10px;
+}
+
+.header p{
+    opacity:.9;
+}
+
+.container{
+    max-width:1200px;
+    margin:auto;
+    padding:30px 20px;
+}
+
+.cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:25px;
+}
+
+.card{
+    background:var(--card);
+    border-radius:16px;
+    padding:25px;
+    text-align:center;
+    box-shadow:0 8px 25px rgba(0,0,0,.08);
+    transition:.3s;
+}
+
+.card:hover{
+    transform:translateY(-5px);
+    box-shadow:0 15px 35px rgba(0,123,255,.15);
+}
+
+.icon{
+    font-size:55px;
+    margin-bottom:15px;
+}
+
+.card h3{
+    color:var(--texto);
+    margin-bottom:10px;
+}
+
+.card p{
+    color:#666;
+    line-height:1.5;
+    min-height:70px;
+}
+
+.btn{
+    display:inline-block;
+    margin-top:20px;
+    background:var(--azul);
+    color:#fff;
+    text-decoration:none;
+    padding:12px 25px;
+    border-radius:8px;
+    transition:.3s;
+}
+
+.btn:hover{
+    background:var(--azul-hover);
+}
+
+.footer{
+    text-align:center;
+    padding:30px;
+    color:#666;
+}
+
+@media(max-width:768px){
+
+    .header h1{
+        font-size:1.6rem;
+    }
+
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="header">
+    <h1>Central de APIs Tecnospeed</h1>
+    <p>Gerenciamento de documentos fiscais eletrônicos</p>
+</div>
+
+<div class="container">
+
+```
+<div class="cards">
+
+    <div class="card">
+        <div class="icon">📄</div>
+        <h3>Importar CT-e</h3>
+        <p>
+            Importação de arquivos XML de
+            Conhecimento de Transporte Eletrônico.
+        </p>
+        <a href="importacao-xml-tecnospeed.html" class="btn">
+            Acessar
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="icon">🚚</div>
+        <h3>Importar MDF-e</h3>
+        <p>
+            Importação de arquivos XML de
+            Manifesto Eletrônico de Documentos Fiscais.
+        </p>
+        <a href="importar-mdfe.html" class="btn">
+            Acessar
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="icon">🖨️</div>
+        <h3>Modelo DACTE</h3>
+        <p>
+            Configuração e envio de modelos
+            personalizados para impressão de CT-e.
+        </p>
+        <a href="modelo-dacte.html" class="btn">
+            Acessar
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="icon">📋</div>
+        <h3>Modelo DAMDFE</h3>
+        <p>
+            Configuração e envio de modelos
+            personalizados para impressão de MDF-e.
+        </p>
+        <a href="modelo-damdfe.html" class="btn">
+            Acessar
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="icon">⚙️</div>
+        <h3>Consultar Configurações</h3>
+        <p>
+            Visualizar parâmetros e configurações
+            cadastradas na API.
+        </p>
+        <a href="consultar-config.html" class="btn">
+            Acessar
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="icon">📊</div>
+        <h3>Status dos Documentos</h3>
+        <p>
+            Consulta de situação e acompanhamento
+            dos documentos processados.
+        </p>
+        <a href="status-documentos.html" class="btn">
+            Acessar
+        </a>
+    </div>
+
+</div>
+```
+
+</div>
+
+<div class="footer">
+    © 2026 - Central de APIs Tecnospeed
+</div>
+
+</body>
+</html>
